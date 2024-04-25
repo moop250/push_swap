@@ -6,7 +6,7 @@
 #    By: hlibine <hlibine@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/04 14:40:48 by hlibine           #+#    #+#              #
-#    Updated: 2024/01/11 14:30:09 by hlibine          ###   ########.fr        #
+#    Updated: 2024/04/25 16:44:33 by hlibine          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,9 +19,9 @@ RM = rm -f
 LIBFT = Libft/
 BONUS = checker
 
-SRCS_PS = scrs/push_swap.c \
+SRCS = scrs/push_swap.c \
 
-SRCS = scrs/ps_checker_ops_0.c \
+SUPP = scrs/ps_checker_ops_0.c \
 		scrs/ps_checker_ops_1.c \
 		scrs/ps_checks.c \
 		scrs/ps_exit.c \
@@ -39,36 +39,27 @@ BONUS_SRCS = bonus/checker.c \
 		bonus/get_next_line/get_next_line.c \
 		bonus/get_next_line/get_next_line_utils.c \
 
-OBJS_PS = ${SRCS_PS:.c=.o}
-OBJS = ${SRCS:.c=.o}
-
-BONUS_OBJS = ${BONUS_SRCS:.c=.o}
-
 INCLUDE = -L ./Libft -lft
 
 GREEN = \033[0;32m
 ORANGE = \033[38;5;208m
 RESET = \033[0m
 
-.c.o:
-		@echo "$(GREEN)Compiling $<$(RESET)"
-		@${CC} -c $< -o ${<:.c=.o}
+$(NAME): $(SUPP) $(SRCS)
+	@echo "$(ORANGE)Building libft$(RESET)"
+	@make -s -C ${LIBFT}
+	@echo "$(GREEN)libft built$(RESET)"
+	@echo "$(ORANGE)Compiling $(NAME)...$(RESET)"
+	@$(CC) $(SUPP) $(SRCS) $(MINILIBX) $(CFLAGS) -o $(NAME) ${INCLUDE}
+	@echo "$(GREEN)$(NAME) built successfully!$(RESET)"
 
-${NAME}: ${OBJS_PS} ${OBJS}
-		@echo "$(ORANGE)Building libft$(RESET)"
-		@make -s -C ${LIBFT}
-		@echo "$(GREEN)libft built$(RESET)"
-		@echo "$(ORANGE)Building $(NAME)$(RESET)"
-		@${CC} ${CFLAGS} ${OBJS_PS} ${OBJS} -o ${NAME} ${INCLUDE}
-		@echo "$(GREEN)$(NAME) built$(RESET)"
-
-${BONUS}: ${OBJS} ${BONUS_OBJS}
-		@echo "$(ORANGE)Building libft$(RESET)"
-		@make -s -C ${LIBFT}
-		@echo "$(GREEN)libft built$(RESET)"
-		@echo "$(ORANGE)Building $(BONUS)$(RESET)"
-		@${CC} ${CFLAGS} ${BONUS_OBJS} ${OBJS} -o ${BONUS} ${INCLUDE}
-		@echo "$(GREEN)$(BONUS) built$(RESET)"
+$(BONUS): $(SUPP) $(BONUS_SRCS)
+	@echo "$(ORANGE)Building libft$(RESET)"
+	@make -s -C ${LIBFT}
+	@echo "$(GREEN)libft built$(RESET)"
+	@echo "$(ORANGE)Compiling $(BONUS)...$(RESET)"
+	@$(CC) $(SUPP) $(BONUS_SRCS) $(MINILIBX) $(CFLAGS) -o $(BONUS) ${INCLUDE}
+	@echo "$(GREEN)$(BONUS) built successfully!$(RESET)"
 
 all: ${NAME} ${BONUS}
 
@@ -76,7 +67,6 @@ bonus: ${BONUS}
 
 clean:
 		@echo "$(ORANGE)Cleaning up$(RESET)"
-		@${RM} ${OBJS_PS} ${OBJS} ${BONUS_OBJS}
 		@cd $(LIBFT) && $(MAKE) -s clean
 		@echo "$(GREEN)Clean up successful$(RESET)"
 
@@ -86,7 +76,7 @@ fclean: clean
 		@cd $(LIBFT) && $(MAKE) -s fclean
 		@echo "$(GREEN)Full clean up successful$(RESET)"
 
-re: clean all
+re: fclean all
 
 
 
